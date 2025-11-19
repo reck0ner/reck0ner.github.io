@@ -3,7 +3,7 @@
 title: Rumana Lakdawala
 
 # Name pronunciation (optional)
-name_pronunciation: ''
+#name_pronunciation: ''
 
 # Full name (for SEO)
 first_name: Rumana
@@ -169,5 +169,4 @@ languages:
 #       Recognized for contributions to scaling laws in deep learning.
 # ---
 
-My research interests lie primarily in developing new statistical and 
-computational methods for analyzing complex networks. I am passionate about studying dynamics of human behavior and strive to make my research accessible to researchers.
+My research interests lie primarily in developing new statistical and computational methods for analyzing complex networks. I am passionate about studying dynamics of human behavior and strive to make my research accessible to researchers.
