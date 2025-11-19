@@ -3,7 +3,7 @@
 title: Rumana Lakdawala
 
 # Name pronunciation (optional)
-#name_pronunciation: ''
+name_pronunciation: ''
 
 # Full name (for SEO)
 first_name: Rumana
@@ -59,7 +59,7 @@ education:
     icon: ""
     date_start: 2015-09-01
     date_end: 2019-06-30
-    summary: |
+    summary: 
       Thesis 
     button:
       text: 'Read Thesis'
