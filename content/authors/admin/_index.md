@@ -167,6 +167,6 @@ languages:
 #     icon: hero/academic-cap
 #     summary: |
 #       Recognized for contributions to scaling laws in deep learning.
-# ---
+---
 
 My research interests lie primarily in developing new statistical and computational methods for analyzing complex networks. I am passionate about studying dynamics of human behavior and strive to make my research accessible to researchers.
