@@ -1,5 +1,4 @@
 ---
-# Display name
 title: Rumana Lakdawala
 
 # Name pronunciation (optional)
@@ -57,31 +56,27 @@ education:
   - area: PhD Methodology  & Statistics
     institution: Tilburg University
     icon: ""
-    date_start: 2015-09-01
-    date_end: 2019-06-30
+    date_start: 2020-01-01
+    date_end: 2024-05-12
     summary: 
       Thesis 
     button:
       text: 'Read Thesis'
-      url: 'https://example.com/thesis.pdf'
+      url: 'https://research.tilburguniversity.edu/en/publications/unravelling-social-network-dynamics-statistical-network-models-fo/'
   - area: MSc Artificial Intelligence
     institution: KU Leuven
     icon: ""
-    date_start: 2013-09-01
-    date_end: 2015-05-31
+    date_start: 2018-09-01
+    date_end: 2020-01-31
     summary: |
-      GPA: 4.0/4.0
-
-      Specialized in machine learning and robotics.
+      Specialized in Big Data Analytics.
   - area: BE Computer Science
     institution: BITS Pilani, Goa
     icon: ""
-    date_start: 2009-09-01
-    date_end: 2013-05-31
+    date_start: 2013-08-01
+    date_end: 2017-08-31
     summary: |
-      GPA: 3.9/4.0
-
-      Minored in Mathematics. President of AI Club.
+      
 
 work:
   - position: postdoctoral researcher
@@ -90,7 +85,7 @@ work:
     icon: ''
     date_start: 2020-01-01
     date_end: ''
-    summary: |2-
+    summary: |
       Causal Discovery
   - position: PhD candidate
     company_name: Methodology and Statistics, Tilburg University
@@ -104,42 +99,46 @@ work:
 # Skills
 # Add your own SVG icons to `assets/media/icons/`
 skills:
-  - name: Technical Skills
+  - name: Programming
     items:
-      - name: Python & PyTorch
-        description: ''
-        percent: 95
-        icon: code-bracket
-      - name: Machine Learning
+      - name: R
         description: ''
         percent: 100
+        icon: code-bracket
+      - name: C++
+        description: ''
+        percent: 80
         icon: chart-bar
-      - name: Cloud Computing (AWS/GCP)
+      - name: Python
         description: ''
         percent: 85
         icon: cloud
-  - name: Hobbies
-    color: '#eeac02'
-    color_border: '#f0bf23'
-    items:
-      - name: Hiking in the Rockies
-        description: ''
-        percent: 80
-        icon: person-simple-walk
-      - name: Building Custom PCs
-        description: ''
-        percent: 90
-        icon: cpu-chip
-      - name: Sci-Fi Reading
-        description: ''
-        percent: 70
-        icon: book-open
+  # - name: something
+  #   color: '#eeac02'
+  #   color_border: '#f0bf23'
+  #   items:
+  #     - name: Video games 
+  #       description: ''
+  #       percent: 80
+  #       icon: person-simple-walk
+  #     - name: Building Custom PCs
+  #       description: ''
+  #       percent: 90
+  #       icon: cpu-chip
+  #     - name: Sci-Fi Reading
+  #       description: ''
+  #       percent: 70
+  #       icon: book-open
 
 languages:
   - name: English
     percent: 100
   - name: Dutch
     percent: 40
+  - name: Hindi
+    percent: 85
+  - name: Gujrati
+    percent: 75
 
 # Awards.
 #   Add/remove as many awards below as you like.

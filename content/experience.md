@@ -18,16 +18,30 @@ sections:
       date_format: 'January 2006'
       # Education or Experience section first?
       is_education_first: false
+  - block: experience
+    content:
+      title: "Teaching and Supervision Experience"
+      items:
+
+        - title: "Teaching Experience"
+          description: |-
+            - **Statistical Computing** — Led R lab sessions and supported ~120 Data Science students across three years.  
+            - **Database Systems** — Teaching assistant and SQL lab instructor for ~100 Computer Science students.
+
+        - title: "Supervision Experience"
+          description: |-
+            - **MSc Thesis** — Supervised a MSc thesis on relational event modeling for Tilburg University.  
+            - **BSc Theses** — Supervised 6 BSc projects for TUe Eindhoven.
   - block: resume-skills
     content:
-      title: Skills & Hobbies
+      title: Technical Skills
       username: admin
     design:
       show_skill_percentage: false
-  - block: resume-awards
-    content:
-      title: Awards
-      username: admin
+  # - block: resume-awards
+  #   content:
+  #     title: Awards
+  #     username: admin
   - block: resume-languages
     content:
       title: Languages
