@@ -11,10 +11,11 @@ appearance:
 # SEO
 marketing:
   seo:
+    default_image: 'media/icon.png'
     site_type: Person
     local_business_type: ''
     org_name: ''
-    description: 'The highly-customizable Hugo Academic theme powered by Hugo Blox Builder. Easily create your personal academic website.'
+    description: 'Academic profile and research portfolio of Rumana L'
     twitter: 'GetResearchDev'
   analytics:
     google_analytics: ''
@@ -32,19 +33,19 @@ header:
     enable: true
     block: 'navbar'
     fixed_to_top: true
-    show_search: true
+    show_search: false
     show_theme_chooser: true
     logo:
-      text: 'Your Name'
-
+      filename_light: 'logo/logo-light.png'
+      filename_dark: 'logo/logo-dark.png'
 # Site footer
 footer:
   copyright:
-    notice: '© {year} Me. This work is licensed under {license}'
+    notice: '© {year} Rumana Lakdawala.'
     license:
       enable: true
       allow_derivatives: false
-      share_alike: true
+      share_alike: false
       allow_commercial: false
 
 # Localization

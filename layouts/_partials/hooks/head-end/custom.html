@@ -1,0 +1,130 @@
+<!-- Fallback (light by default) -->
+<link rel="icon" type="image/png" href="/media/icon.png">
+
+<!-- Light mode favicon -->
+<link rel="icon" type="image/png" href="/media/icon-light.png" media="(prefers-color-scheme: light)">
+
+<!-- Dark mode favicon -->
+<link rel="icon" type="image/png" href="/media/icon-dark.png" media="(prefers-color-scheme: dark)">
+
+
+<style>
+  /* kill the giant top padding on the first resume biography block */
+  section#section-resume-biography-3 .resume-biography {
+    padding-top: 1rem !important;
+  }
+
+  /* optional: also remove bottom padding */
+  section#section-resume-biography-3 .resume-biography {
+    padding-bottom: 0 !important;
+  }
+</style>
+
+<!--- remove education icon --->
+
+<style>
+  /* remove huge default padding from the first homepage section */
+  section#section-resume-biography-3.hbb-section {
+    padding-top: 2rem !important;
+    padding-bottom: 0 !important;
+  }
+</style>
+
+<!--- remove education icon --->
+
+<style>
+  /* remove the entire icon circle (wrapper + SVG) from Education boxes */
+  section#section-resume-biography-3 .resume-biography .grid:nth-of-type(2) .flex.h-12.w-12 {
+    display: none !important;
+  }
+</style>
+
+<!--- change navbar colour --->
+
+<style>
+  /* light mode translucent navbar */
+  #site-header {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+</style>
+
+<style>
+  /* dark mode translucent navbar */
+  html.dark #site-header {
+    background-color: rgba(17, 17, 17, 0.4) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+</style>
+
+<style>
+  /* translucent navbar — light mode */
+  div.page-header.sticky {
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+</style>
+
+<style>
+  /* translucent navbar — dark mode */
+  html.dark div.page-header.sticky {
+    background-color: rgba(20, 20, 20, 0.6) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+</style>
+
+
+<style>
+  #site-header nav .hb-nav-items {
+    margin-left: auto !important;
+  }
+</style>
+
+<style>
+  /* translucent navbar — light mode */
+  .page-header.sticky {
+    background-color: rgba(255, 255, 255, 0.55) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* translucent navbar — dark mode */
+  html.dark .page-header.sticky {
+    background-color: rgba(15, 15, 15, 0.55) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* move nav items to right */
+  .page-header.sticky #nav-menu {
+    margin-left: auto !important;
+  }
+</style>
+
+
+<style>
+
+/* disable ALL links inside publication list items */
+.blox-item a {
+  pointer-events: none !important;
+  cursor: default !important;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+/* if the wrapper itself is a link */
+.blox-item {
+  pointer-events: none !important;
+}
+
+/* but allow buttons or icons to still work — if you want this, tell me */
+.blox-item .btn,
+.blox-item .btn a {
+  pointer-events: auto !important;
+}
+
+</style>
