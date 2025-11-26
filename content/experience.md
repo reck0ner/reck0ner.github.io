@@ -32,12 +32,12 @@ sections:
   #         description: |-
   #           - **MSc Thesis** — Supervised a MSc thesis on relational event modeling for Tilburg University.  
   #           - **BSc Theses** — Supervised 6 BSc projects for TUe Eindhoven.
-  - block: resume-skills
-    content:
-      title: Technical Skills
-      username: admin
-    design:
-      show_skill_percentage: false
+  # - block: resume-skills
+  #   content:
+  #     title: Technical Skills
+  #     username: admin
+  #   design:
+  #     show_skill_percentage: false
   # - block: resume-awards
   #   content:
   #     title: Awards

@@ -11,12 +11,12 @@
 <style>
   /* kill the giant top padding on the first resume biography block */
   section#section-resume-biography-3 .resume-biography {
-    padding-top: 1rem !important;
+    padding-top: 2rem !important;
   }
 
-  /* optional: also remove bottom padding */
+  /*  also remove bottom padding */
   section#section-resume-biography-3 .resume-biography {
-    padding-bottom: 0 !important;
+    padding-bottom: 3rem !important;
   }
 </style>
 
@@ -25,7 +25,7 @@
 <style>
   /* remove huge default padding from the first homepage section */
   section#section-resume-biography-3.hbb-section {
-    padding-top: 2rem !important;
+    padding-top: 1rem !important;
     padding-bottom: 0 !important;
   }
 </style>
@@ -33,7 +33,7 @@
 <!--- remove education icon --->
 
 <style>
-  /* remove the entire icon circle (wrapper + SVG) from Education boxes */
+  /* remove the entire icon circle */
   section#section-resume-biography-3 .resume-biography .grid:nth-of-type(2) .flex.h-12.w-12 {
     display: none !important;
   }
@@ -121,10 +121,110 @@
   pointer-events: none !important;
 }
 
-/* but allow buttons or icons to still work — if you want this, tell me */
+/* but allow buttons or icons to still work*/
 .blox-item .btn,
 .blox-item .btn a {
   pointer-events: auto !important;
 }
 
 </style>
+
+
+<style>
+/* hide the site title text */
+.navbar-brand {
+  font-size: 0 !important;
+}
+
+/* show your logo instead of text */
+
+/* hide the text */
+.navbar-brand {
+  font-size: 0 !important;
+}
+
+/* default = light mode */
+html:not(.dark) .navbar-brand::before {
+  content: "";
+  display: inline-block;
+  height: 32px;
+  width: 32px;
+  background-image: url('/media/logo-light.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* dark mode */
+html.dark .navbar-brand::before {
+  content: "";
+  display: inline-block;
+  height: 32px;
+  width: 32px;
+  background-image: url('/media/logo-dark.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+</style>
+
+<style>
+
+/* make the gradient background fill the entire page */
+html, body {
+  min-height: 100vh;
+  height: auto;
+  background: inherit !important; /* inherit gradient from main hero section */
+}
+
+/* extend the main gradient class to body */
+.hbx-bg-gradient,
+body {
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+/* remove the black footer wrapper */
+.page-footer,
+.page-footer-wrapper,
+#page-footer {
+  display: none !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+</style>
+
+
+<!-- <style>
+/* nav bar size */
+/* Force smaller navbar height */
+:root {
+  --navbar-height: 52px !important;
+}
+
+/* main header container */
+.page-header {
+  height: var(--navbar-height) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* actual nav */
+#site-header,
+nav.navbar {
+  height: var(--navbar-height) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+#nav-menu a {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: var(--navbar-height) !important;
+}
+</style> -->
+

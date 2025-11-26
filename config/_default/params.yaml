@@ -36,17 +36,18 @@ header:
     show_search: false
     show_theme_chooser: true
     logo:
-      filename_light: 'logo/logo-light.png'
-      filename_dark: 'logo/logo-dark.png'
+      image: 'media/logo-light.png'
+      image_dark: 'media/logo-dark.png'
 # Site footer
 footer:
-  copyright:
-    notice: '© {year} Rumana Lakdawala.'
-    license:
-      enable: true
-      allow_derivatives: false
-      share_alike: false
-      allow_commercial: false
+  enable: false
+  # copyright:
+  #   notice: '© {year} Rumana Lakdawala.'
+  #   license:
+  #     enable: true
+  #     allow_derivatives: false
+  #     share_alike: false
+  #     allow_commercial: false
 
 # Localization
 locale:

@@ -47,9 +47,10 @@ profiles:
     url: https://orcid.org/0000-0002-9992-6035
 
 interests:
-  - Causality
-  - Dynamic Social Networks
+  - Social Networks
   - Statistics
+  - Causality
+
 
 
 education:
@@ -69,7 +70,7 @@ education:
     date_start: 2018-09-01
     date_end: 2020-01-31
     summary: |
-      Specialized in Big Data Analytics.
+      Specialized in Big Data Analytics
   - area: BE Computer Science
     institution: BITS Pilani, Goa
     icon: ""
@@ -79,11 +80,11 @@ education:
       
 
 work:
-  - position: postdoctoral researcher
+  - position: Postdoctoral Researcher
     company_name: The Artificial Intelligence and Data Science division, Utrecht University
     company_url: ''
     icon: ''
-    date_start: 2020-01-01
+    date_start: 2024-10-01
     date_end: ''
     summary: |
       Causal Discovery
@@ -91,28 +92,28 @@ work:
     company_name: Methodology and Statistics, Tilburg University
     company_url: ''
     icon: ''
-    date_start: 2019-06-01
-    date_end: 2019-12-31
+    date_start: 2020-01-01
+    date_end: 2024-05-31
     summary: |
       Relational Event Models
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`
-skills:
-  - name: Programming
-    items:
-      - name: R
-        description: ''
-        percent: 100
-        icon: code-bracket
-      - name: C++
-        description: ''
-        percent: 80
-        icon: chart-bar
-      - name: Python
-        description: ''
-        percent: 85
-        icon: cloud
+# skills:
+#   - name: Programming
+#     items:
+#       - name: R
+#         description: ''
+#         percent: 100
+#         icon: code-bracket
+#       - name: C++
+#         description: ''
+#         percent: 80
+#         icon: chart-bar
+#       - name: Python
+#         description: ''
+#         percent: 85
+#         icon: cloud
   # - name: something
   #   color: '#eeac02'
   #   color_border: '#f0bf23'
