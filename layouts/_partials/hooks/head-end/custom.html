@@ -9,7 +9,7 @@
 
 
 <style>
-  /* kill the giant top padding on the first resume biography block */
+  /* remove the giant top padding on the first resume biography block */
   section#section-resume-biography-3 .resume-biography {
     padding-top: 2rem !important;
   }
@@ -30,8 +30,6 @@
   }
 </style>
 
-<!--- remove education icon --->
-
 <style>
   /* remove the entire icon circle */
   section#section-resume-biography-3 .resume-biography .grid:nth-of-type(2) .flex.h-12.w-12 {
@@ -40,103 +38,78 @@
 </style>
 
 <!--- change navbar colour --->
-
-<style>
-  /* light mode translucent navbar */
-  #site-header {
-    background-color: rgba(255, 255, 255, 0.4) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-</style>
-
-<style>
-  /* dark mode translucent navbar */
-  html.dark #site-header {
-    background-color: rgba(17, 17, 17, 0.4) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-</style>
-
-<style>
-  /* translucent navbar — light mode */
-  div.page-header.sticky {
-    background-color: rgba(255, 255, 255, 0.6) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-</style>
-
-<style>
-  /* translucent navbar — dark mode */
-  html.dark div.page-header.sticky {
-    background-color: rgba(20, 20, 20, 0.6) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-</style>
-
-
-<style>
-  #site-header nav .hb-nav-items {
-    margin-left: auto !important;
-  }
-</style>
-
-<style>
-  /* translucent navbar — light mode */
-  .page-header.sticky {
-    background-color: rgba(255, 255, 255, 0.55) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-
-  /* translucent navbar — dark mode */
-  html.dark .page-header.sticky {
-    background-color: rgba(15, 15, 15, 0.55) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-
-  /* move nav items to right */
-  .page-header.sticky #nav-menu {
-    margin-left: auto !important;
-  }
-</style>
-
-
 <style>
 
-/* disable ALL links inside publication list items */
-.blox-item a {
-  pointer-events: none !important;
-  cursor: default !important;
-  text-decoration: none !important;
-  color: inherit !important;
+/* Base navbar (light mode) */
+.page-header.sticky.top-0 {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
 
-/* if the wrapper itself is a link */
+/* Dark mode navbar */
+html.dark .page-header.sticky.top-0 {
+  background: rgba(20, 20, 20, 0.55) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Move nav menu to the right */
+.page-header.sticky.top-0 #nav-menu {
+  margin-left: auto !important;
+}
+
+/* Remove all other conflicting backgrounds */
+#site-header,
+.page-header,
+nav.navbar {
+  background: none !important;
+  border: none !important;
+}
+
+</style>
+
+
+
+<!--- fix publications linking to stuff --->
+<style>
+
+/* disable all auto-generated publication links */
+.blox-item a {
+  pointer-events: none !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  cursor: default !important;
+}
+
+/* prevent the entire publication card from being clickable */
 .blox-item {
   pointer-events: none !important;
 }
 
-/* but allow buttons or icons to still work*/
+/* allow buttons/icons inside publications to still work normally */
 .blox-item .btn,
 .blox-item .btn a {
   pointer-events: auto !important;
 }
 
+/* remove hover underline (safety) */
+.blox-item a:hover {
+  text-decoration: none !important;
+}
+
 </style>
 
 
+
+<!--- show logo instead of text on navbar --->
 <style>
 /* hide the site title text */
 .navbar-brand {
   font-size: 0 !important;
 }
-
-/* show your logo instead of text */
 
 /* hide the text */
 .navbar-brand {
@@ -169,8 +142,10 @@ html.dark .navbar-brand::before {
 
 </style>
 
-<style>
 
+<!--- bg--->
+
+<style>
 /* make the gradient background fill the entire page */
 html, body {
   min-height: 100vh;
@@ -197,34 +172,3 @@ body {
 }
 
 </style>
-
-
-<!-- <style>
-/* nav bar size */
-/* Force smaller navbar height */
-:root {
-  --navbar-height: 52px !important;
-}
-
-/* main header container */
-.page-header {
-  height: var(--navbar-height) !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* actual nav */
-#site-header,
-nav.navbar {
-  height: var(--navbar-height) !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-#nav-menu a {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  line-height: var(--navbar-height) !important;
-}
-</style> -->
-

@@ -26,14 +26,14 @@ role: Postdoctoral Researcher
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
-  - name: Utrecht University
-    url: https://www.uu.nl/
+  - name: Jheronimus Academy of Data Science, TU/e
+    url: https://www.jads.nl/
 
 # Social network links
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
 profiles:
   - icon: at-symbol
-    url: 'mailto:r.j.lakdawala@uu.nl'
+    url: 'mailto:r.j.lakdawala@tue.nl'
     label: E-mail Me
   # - icon: brands/x
   #   url: https://twitter.com/AlexAIResearch
@@ -81,11 +81,19 @@ education:
 
 work:
   - position: Postdoctoral Researcher
+    company_name: Jheronimus Academy of Data Science (JADS), TU/e
+    company_url: ''
+    icon: ''
+    date_start: 2025-02-01
+    date_end: ''
+    summary: |
+      Networks, Machine Learning
+  - position: Postdoctoral Researcher
     company_name: The Artificial Intelligence and Data Science division, Utrecht University
     company_url: ''
     icon: ''
     date_start: 2024-10-01
-    date_end: ''
+    date_end: 2024-12-31
     summary: |
       Causal Discovery
   - position: PhD candidate

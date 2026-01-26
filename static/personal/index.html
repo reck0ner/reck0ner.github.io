@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Personal Page</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #1e1e30 0%, #13151d 100%);
+      color: #fff;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      width: 100%;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      background: rgba(20, 20, 20, 0.55);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-sizing: border-box;
+    }
+
+    /* logo image */
+    .navbar-logo {
+      height: 30px;
+      width: auto;
+      display: block;
+    }
+
+    /* nav items wrapper */
+    .navbar-menu {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .navbar-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.95rem;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+
+    .navbar-menu a:hover {
+      opacity: 1;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      text-align: center;
+      padding: 100px 20px 80px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    /* CONTENT SECTION */
+    .section {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 20px;
+      line-height: 1.7;
+      font-size: 1.05rem;
+      opacity: 0.95;
+    }
+
+    .section h2 {
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <!-- Dark-mode switching for the logo -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const logo = document.getElementById("logo");
+
+      const updateLogo = () => {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          logo.src = "/media/logo-dark.png";
+        } else {
+          logo.src = "/media/logo-light.png";
+        }
+      };
+
+      updateLogo();
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", updateLogo);
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <img id="logo" class="navbar-logo" src="/media/logo-light.png" alt="logo">
+
+    <div class="navbar-menu">
+      <a href="/">Home</a>
+      <a href="#projects">Creative Projects</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Welcome to My Personal Page</h1>
+    <p>This private page contains content such as my creative projects.</p>
+  </div>
+
+  <!-- CONTENT -->
+  <!-- <div class="section" id="about">
+    <h2>About This Page</h2>
+    <p>
+      This standalone HTML page lives in <code>/personal/</code> and is intentionally hidden from search engines and your main navigation.
+      Only people with the direct URL can access it.
+    </p>
+  </div> -->
+
+ 
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 Rumana Lakdawala
+  </footer>
+
+</body>
+</html>

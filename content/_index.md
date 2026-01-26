@@ -13,7 +13,7 @@ sections:
       username: admin
       text: ''
       headings:
-        about: ''
+        about: 'About'
         education: ''
         interests: ''
     design:
