@@ -84,7 +84,7 @@ work:
     company_name: Jheronimus Academy of Data Science (JADS), TU/e
     company_url: ''
     icon: ''
-    date_start: 2025-02-01
+    date_start: 2026-02-01
     date_end: ''
     summary: |
       Networks, Machine Learning
