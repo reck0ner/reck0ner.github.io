@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#285647">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Our Kitchen">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>Our Kitchen</title>
+  <link rel="stylesheet" href="./kitchen.css">
+  <script type="module" src="./kitchen.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <section class="intro"><h1>Our Kitchen<span>.</span></h1><div class="intro-actions"><button id="add-open" class="primary" disabled><span aria-hidden="true">＋</span> Add an item</button><button id="refresh" class="secondary">↻ Refresh</button></div></section>
+    <section class="summary" aria-label="Inventory overview"><div><span id="total">—</span><p>items on hand</p></div><div><span id="soon">—</span><p>expiring this month</p></div><div><span id="expired">—</span><p>expired</p></div></section>
+    <section class="inventory" aria-labelledby="inventory-heading"><div class="inventory-heading"><h2 id="inventory-heading">On the shelves</h2><p id="sync" aria-live="polite">Connecting to your kitchen…</p></div>
+      <div class="toolbar"><div class="filters" role="group" aria-label="Filter by storage"><button data-filter="All" aria-pressed="true">All <span>0</span></button><button data-filter="Fridge" aria-pressed="false">Fridge <span>0</span></button><button data-filter="Pantry" aria-pressed="false">Pantry <span>0</span></button><button data-filter="Spices" aria-pressed="false">Spices <span>0</span></button></div><label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Search inventory</span><input id="search" type="search" placeholder="Find an ingredient…" maxlength="100"></label></div>
+      <p id="message" role="status" aria-live="polite"></p><div id="items" class="items" aria-busy="true"></div><div id="empty" class="empty" hidden><span aria-hidden="true">♧</span><h3>Nothing on this shelf yet</h3><p>Add an item to get started.</p></div>
+    </section>
+  </main>
+  <dialog id="editor" aria-labelledby="editor-title"><form id="item-form"><div class="dialog-top"><p class="eyebrow">MAKE ROOM FOR SOMETHING GOOD</p><button type="button" class="icon-button" id="close-editor" aria-label="Close">×</button></div><h2 id="editor-title">Add to the kitchen</h2><p id="edit-name"></p><div id="add-fields"><label>Item name<input id="name" name="name" maxlength="80" autocomplete="off" required placeholder="e.g. Greek yogurt"></label><label>Keep it in<select id="location" name="location"><option>Fridge</option><option>Pantry</option><option>Spices</option></select></label></div><div class="form-row" id="quantity-row"><label>Quantity<input id="quantity" name="quantity" type="number" min="0" max="9999" step="0.01" value="1" inputmode="decimal" required></label><label id="unit-label">Unit <span>(optional)</span><input id="unit" name="unit" maxlength="20" placeholder="e.g. jars"></label></div><label id="expiry-label">Expiry <span>(optional month & year)</span><input id="expiry" name="expiry" type="month" min="2000-01" max="2100-12" pattern="(?:20[0-9]{2}|2100)-(?:0[1-9]|1[0-2])" placeholder="YYYY-MM"></label><p class="form-help" id="expiry-help">Leave expiry blank if you don’t have it.</p><div id="challenge"></div><p id="form-error" role="alert"></p><button id="save" class="primary" type="submit">Add item</button><p class="form-help">Your changes are shared with everyone using this kitchen.</p></form></dialog>
+  <div id="quick-challenge" aria-label="Verify to save a quantity change"></div>
+  <noscript><p class="notice">Please enable JavaScript to load and edit the inventory.</p></noscript>
+</body>
+</html>
