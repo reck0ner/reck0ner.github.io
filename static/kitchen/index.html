@@ -17,9 +17,9 @@
 </head>
 <body>
   <main class="shell">
-    <section class="intro"><h1>Our Kitchen<span>.</span></h1><div class="intro-actions"><button id="add-open" class="primary" disabled><span aria-hidden="true">＋</span> Add an item</button><button id="refresh" class="secondary">↻ Refresh</button></div></section>
+    <section class="intro"><h1>Our Kitchen<span>.</span></h1><div class="intro-actions"><button id="add-open" class="primary" disabled><span aria-hidden="true">＋</span> Add an item</button><button id="refresh" class="secondary">↻ Refresh</button><button id="theme-toggle" class="secondary theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">☾</button></div></section>
     <section class="summary" aria-label="Inventory overview"><div><span id="total">—</span><p>items on hand</p></div><div><span id="soon">—</span><p>expiring this month</p></div><div><span id="expired">—</span><p>expired</p></div></section>
-    <section class="inventory" aria-labelledby="inventory-heading"><div class="inventory-heading"><h2 id="inventory-heading">On the shelves</h2><p id="sync" aria-live="polite">Connecting to your kitchen…</p></div>
+    <section class="inventory" aria-label="Inventory"><p id="sync" aria-live="polite">Connecting to your kitchen…</p>
       <div class="toolbar"><div class="filters" role="group" aria-label="Filter by storage"><button data-filter="All" aria-pressed="true">All <span>0</span></button><button data-filter="Fridge" aria-pressed="false">Fridge <span>0</span></button><button data-filter="Pantry" aria-pressed="false">Pantry <span>0</span></button><button data-filter="Spices" aria-pressed="false">Spices <span>0</span></button></div><label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Search inventory</span><input id="search" type="search" placeholder="Find an ingredient…" maxlength="100"></label></div>
       <p id="message" role="status" aria-live="polite"></p><div id="items" class="items" aria-busy="true"></div><div id="empty" class="empty" hidden><span aria-hidden="true">♧</span><h3>Nothing on this shelf yet</h3><p>Add an item to get started.</p></div>
     </section>

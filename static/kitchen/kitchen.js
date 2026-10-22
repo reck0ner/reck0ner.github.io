@@ -3,8 +3,33 @@ import { config } from './config.js';
 const $ = (id) => document.getElementById(id);
 const demo = new URLSearchParams(location.search).get('demo') === '1';
 const categories = ['Fridge', 'Pantry', 'Spices'];
+const themeKey = 'our-kitchen-theme';
+const themeMedia = window.matchMedia?.('(prefers-color-scheme: dark)');
+let savedTheme = null;
+try {
+  const value = localStorage.getItem(themeKey);
+  if (value === 'dark' || value === 'light') savedTheme = value;
+} catch {}
+function applyTheme() {
+  const dark = (savedTheme || (themeMedia?.matches ? 'dark' : 'light')) === 'dark';
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  const button = $('theme-toggle');
+  button.textContent = dark ? '☀' : '☾';
+  button.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  button.setAttribute('aria-pressed', String(dark));
+  button.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#171e1b' : '#285647');
+}
+applyTheme();
+$('theme-toggle').onclick = () => {
+  savedTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem(themeKey, savedTheme); } catch {}
+  applyTheme();
+};
+themeMedia?.addEventListener?.('change', () => { if (!savedTheme) applyTheme(); });
 let items = [], filter = 'All', writing = false, writable = false, editing = null;
 let widget, token = '', pendingAdd = null;
+let formChallengePromise, formTokenWaiter;
 let turnstileLoading, quickWidget, quickToken = '', quickWaiter;
 let quickSession = null;
 let inventoryRevision = 0;
@@ -27,8 +52,8 @@ function showSnapshot() {
     if (!data || !Array.isArray(data.items) || data.items.length > 500 || !data.items.every(validItem) ||
         !Number.isFinite(data.savedAt) || data.savedAt > Date.now() || Date.now() - data.savedAt > 30 * 86400000) return;
     items = data.items;
-    // A cached list is useful immediately, but editing waits for a fresh read.
-    writable = false;
+    // The version check on writes protects changes made since this snapshot.
+    writable = data.writable === true && Boolean(config.turnstileSiteKey) && navigator.onLine !== false;
     $('sync').textContent = `Showing saved list from ${new Date(data.savedAt).toLocaleString()} · checking for updates…`;
     render();
   } catch {}
@@ -266,15 +291,32 @@ async function quickChange(item, quantity, direction) {
 async function challenge() {
   if (demo) return;
   token = '';
-  $('save').disabled = true;
   await ensureTurnstile();
   if (!$('editor').open) return;
   if (widget !== undefined) window.turnstile.remove(widget);
   widget = window.turnstile.render('#challenge', {
     sitekey: config.turnstileSiteKey, action: 'kitchen-write', size: 'flexible',
-    callback: value => { token = value; $('save').disabled = writing; },
-    'expired-callback': () => { token = ''; $('save').disabled = true; },
-    'error-callback': () => { token = ''; $('save').disabled = true; $('form-error').textContent = 'Verification failed. Close and reopen this form to try again.'; },
+    callback: value => { token = value; formTokenWaiter?.resolve(value); },
+    'expired-callback': () => {
+      token = '';
+      if (widget !== undefined) window.turnstile.reset(widget);
+    },
+    'error-callback': () => {
+      token = '';
+      formTokenWaiter?.reject(new Error('Verification failed. Close and reopen this form to try again.'));
+    },
+  });
+}
+async function getFormToken() {
+  if (demo) return '';
+  if (formChallengePromise && !await formChallengePromise) throw new Error('Verification could not load. Close and reopen this form.');
+  if (token) return token;
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => { formTokenWaiter = null; reject(new Error('Verification took too long. Close and reopen this form.')); }, 30000);
+    formTokenWaiter = {
+      resolve: value => { clearTimeout(timer); formTokenWaiter = null; resolve(value); },
+      reject: error => { clearTimeout(timer); formTokenWaiter = null; reject(error); },
+    };
   });
 }
 function openEditor(item = null, target = null) {
@@ -300,11 +342,14 @@ function openEditor(item = null, target = null) {
   $('save').disabled = false;
   $('editor').showModal();
   (item ? $('quantity') : $('name')).focus();
-  challenge().catch(error => { $('form-error').textContent = error.message; });
+  formChallengePromise = challenge().then(() => true).catch(error => {
+    $('form-error').textContent = error.message;
+    return false;
+  });
 }
 $('item-form').addEventListener('submit', async event => {
   event.preventDefault();
-  if (writing || (!demo && !token)) return;
+  if (writing) return;
   const quantity = Number($('quantity').value);
   const unit = $('unit').value.trim();
   const name = $('name').value.trim();
@@ -336,7 +381,7 @@ $('item-form').addEventListener('submit', async event => {
     if (demo) {
       const item = editing ? {...editing, quantity, version: crypto.randomUUID()} : {...payload, version: crypto.randomUUID()};
       data = {item};
-    } else data = await api({...payload, turnstileToken: token});
+    } else data = await api({...payload, turnstileToken: await getFormToken()});
     remember(data.item);
     if (editing) itemState = {id: editing.id, kind: 'saved', text: 'Saved'};
     saveSnapshot();
@@ -356,7 +401,7 @@ $('item-form').addEventListener('submit', async event => {
     token = '';
     writing = false;
     $('close-editor').disabled = false;
-    $('save').disabled = !demo;
+    $('save').disabled = false;
     render();
   }
 });
@@ -374,5 +419,6 @@ showSnapshot();
 load();
 
 if (!demo && 'serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js', {scope: '/kitchen/'}).catch(() => {});
+  navigator.serviceWorker.register('./sw.js', {scope: '/kitchen/', updateViaCache: 'none'})
+    .then(registration => registration.update()).catch(() => {});
 }

@@ -23,3 +23,22 @@
 .item-bottom{justify-content:space-between;margin-top:auto}
 .item-bottom .item-icon{flex:none;width:20px;height:20px;font-size:14px;border-radius:5px}
 @media(max-width:560px){.item{min-height:101px}.item-meta{font-size:9px;gap:4px}.item h3{margin-bottom:3px}.item-bottom .item-icon{width:18px;height:18px;font-size:13px}}
+
+/* Appearance switch and the compact sync line left after removing the shelf heading. */
+#sync{font-size:11px;line-height:1.4;color:var(--muted);text-align:right;margin:0 0 12px;min-height:1.4em}
+.theme-toggle{width:40px;min-width:40px;padding:6px;font-size:20px;line-height:1}
+.intro-actions .theme-toggle{padding:6px;font-size:19px}
+
+:root[data-theme=dark]{color-scheme:dark;--paper:#171e1b;--ink:#e7eee7;--green:#347b61;--muted:#adbcaf;--line:#39483f;--soft:#293c31;--orange:#ecab82;background:var(--paper)}
+:root[data-theme=dark] .primary:hover{background:#40906f}
+:root[data-theme=dark] .notice{background:#28352c}
+:root[data-theme=dark] .demo{background:#3f3225}
+:root[data-theme=dark] .filters{background:#26342b}
+:root[data-theme=dark] .search,:root[data-theme=dark] .item{background:#222c26}
+:root[data-theme=dark] .category,:root[data-theme=dark] .quantity-control button{background:#314238;color:var(--ink)}
+:root[data-theme=dark] .quantity-control .quantity-value{background:transparent}
+:root[data-theme=dark] dialog input,:root[data-theme=dark] dialog select{background:#222c26;border-color:#5b6a5e;color:var(--ink)}
+:root[data-theme=dark] input::placeholder{color:#a2b2a5}
+:root[data-theme=dark] .expiry.due,:root[data-theme=dark] .item-status.pending{color:#ffbd7a}
+:root[data-theme=dark] .expiry.past,:root[data-theme=dark] .stock.zero,:root[data-theme=dark] #message,:root[data-theme=dark] #form-error,:root[data-theme=dark] .item-status.error,:root[data-theme=dark] .item-status.conflict{color:#ffa18e}
+:root[data-theme=dark] .item-status.saved{color:#86d5a6}

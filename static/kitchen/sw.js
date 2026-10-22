@@ -1,5 +1,5 @@
 // Cache only the public app shell. Inventory/API responses are always network-only.
-const CACHE = 'our-kitchen-shell-v3';
+const CACHE = 'our-kitchen-shell-v5';
 const SHELL = ['/kitchen/', '/kitchen/kitchen.css', '/kitchen/kitchen.js', '/kitchen/config.js', '/kitchen/manifest.webmanifest', '/kitchen/icons/icon-192.png', '/kitchen/icons/icon-512.png', '/kitchen/icons/apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
