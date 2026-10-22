@@ -6,6 +6,33 @@ const categories = ['Fridge', 'Pantry', 'Spices'];
 let items = [], filter = 'All', writing = false, writable = false, editing = null;
 let widget, token = '', pendingAdd = null;
 let turnstileLoading, quickWidget, quickToken = '', quickWaiter;
+let quickSession = null;
+let inventoryRevision = 0;
+const snapshotKey = `our-kitchen-inventory-v1:${location.origin}${config.apiPath}`;
+let itemState = null;
+function validItem(x) {
+  return x && typeof x.id === 'string' && typeof x.name === 'string' &&
+    Number.isFinite(x.quantity) && x.quantity >= 0 && x.quantity <= 9999 &&
+    typeof x.unit === 'string' && categories.includes(x.location) &&
+    typeof x.expiry === 'string' && typeof x.version === 'string';
+}
+function saveSnapshot() {
+  if (demo) return;
+  try { localStorage.setItem(snapshotKey, JSON.stringify({items, writable, savedAt: Date.now()})); } catch {}
+}
+function showSnapshot() {
+  if (demo) return;
+  try {
+    const data = JSON.parse(localStorage.getItem(snapshotKey));
+    if (!data || !Array.isArray(data.items) || data.items.length > 500 || !data.items.every(validItem) ||
+        !Number.isFinite(data.savedAt) || data.savedAt > Date.now() || Date.now() - data.savedAt > 30 * 86400000) return;
+    items = data.items;
+    // A cached list is useful immediately, but editing waits for a fresh read.
+    writable = false;
+    $('sync').textContent = `Showing saved list from ${new Date(data.savedAt).toLocaleString()} · checking for updates…`;
+    render();
+  } catch {}
+}
 const sample = [
   ['Greek yogurt', 2, 'Fridge', '2026-10', 'tubs'], ['Free-range eggs', 6, 'Fridge', '2026-11', ''],
   ['Basmati rice', 1.5, 'Pantry', '2027-03', 'kg'], ['Cherry tomatoes', 250, 'Fridge', '', 'g'],
@@ -58,7 +85,8 @@ function render() {
     ]) {
       const b = el('button', target === null ? 'quantity-value' : '', text);
       b.setAttribute('aria-label', label);
-      b.disabled = !writable || writing || target > 9999 || (text === '−' && item.quantity === 0);
+      b.disabled = !writable || (writing && (quickSession?.id !== item.id || target === null)) ||
+        target > 9999 || (text === '−' && item.quantity === 0);
       b.dataset.item = item.id;
       b.dataset.direction = text === '−' ? 'minus' : text === '+' ? 'plus' : 'edit';
       b.onclick = () => target !== null && Number.isInteger(item.quantity)
@@ -67,12 +95,18 @@ function render() {
     }
     bottom.append(controls);
     card.append(name, meta, bottom);
+    if (itemState?.id === item.id) {
+      const status = el('p', `item-status ${itemState.kind}`, itemState.text);
+      status.setAttribute('role', 'status');
+      card.append(status);
+    }
     return card;
   }));
   $('empty').hidden = visible.length !== 0;
   $('empty').querySelector('h3').textContent = query ? 'No matching ingredients' : 'Nothing on this shelf yet';
   $('empty').querySelector('p').textContent = query ? 'Try another search or choose a different shelf.' : 'Add an item to get started.';
   $('add-open').disabled = !writable || writing;
+  $('refresh').disabled = writing;
 }
 async function api(body) {
   const response = await fetch(config.apiPath, {
@@ -96,25 +130,32 @@ async function api(body) {
       not_found: 'This item is no longer in the sheet. Refresh the kitchen.',
       capacity: 'The kitchen is full. Its owner needs to archive old rows in the sheet.',
     };
-    throw new Error(messages[data.error] || 'The kitchen could not confirm this request. Refresh before making another change.');
+    const error = new Error(messages[data.error] || 'The kitchen could not confirm this request. Refresh before making another change.');
+    error.code = data.error;
+    throw error;
   }
   return data;
 }
 async function load() {
   if (writing) return;
+  const revision = inventoryRevision;
   $('refresh').disabled = true;
   $('items').setAttribute('aria-busy', 'true');
   $('message').textContent = '';
   try {
     const data = demo ? {items: items.length ? items : structuredClone(sample), writable: true} : await api();
+    if (revision !== inventoryRevision) return;
     if (!Array.isArray(data.items)) throw new Error('The kitchen returned an unexpected response.');
     items = data.items;
     writable = data.writable && (demo || Boolean(config.turnstileSiteKey));
+    itemState = null;
+    saveSnapshot();
     $('sync').textContent = demo ? 'Sample kitchen · preview only' : `Updated ${new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`;
     if (!writable) $('message').textContent = 'Viewing only. Public editing has not been enabled by the owner.';
     render();
     if (writable && !demo) prepareQuick().catch(() => {});
   } catch (error) {
+    if (revision !== inventoryRevision) return;
     writable = false;
     $('message').textContent = error.message;
     $('sync').textContent = items.length ? 'Connection lost · showing last loaded items' : 'Not connected';
@@ -122,7 +163,7 @@ async function load() {
     if (!items.length) $('empty').hidden = true;
   } finally {
     $('items').setAttribute('aria-busy', 'false');
-    $('refresh').disabled = false;
+    $('refresh').disabled = writing;
   }
 }
 
@@ -173,23 +214,49 @@ function remember(item) {
   if (index < 0) items.push(item); else items[index] = item;
 }
 async function quickChange(item, quantity, direction) {
-  if (writing || !writable) return;
+  if (!writable) return;
+  if (quickSession?.id === item.id) {
+    quickSession.desired = quantity;
+    remember({...item, quantity});
+    render();
+    return;
+  }
+  if (writing) return;
   writing = true;
+  inventoryRevision++;
+  quickSession = {id: item.id, desired: quantity};
+  let confirmed = item;
+  remember({...item, quantity});
+  itemState = {id: item.id, kind: 'pending', text: 'Saving…'};
   $('message').textContent = '';
   $('sync').textContent = `Saving ${item.name}…`;
   render();
   try {
-    const turnstileToken = await getQuickToken();
-    const data = demo ? {item: {...item, quantity, version: crypto.randomUUID()}}
-      : await api({action: 'setQuantity', id: item.id, quantity, version: item.version, turnstileToken});
-    remember(data.item);
+    while (true) {
+      const nextQuantity = quickSession.desired;
+      const turnstileToken = await getQuickToken();
+      const data = demo ? {item: {...confirmed, quantity: nextQuantity, version: crypto.randomUUID()}}
+        : await api({action: 'setQuantity', id: item.id, quantity: nextQuantity,
+          version: confirmed.version, turnstileToken});
+      confirmed = data.item;
+      quickToken = '';
+      if (quickSession.desired === nextQuantity) break;
+    }
+    remember(confirmed);
+    itemState = {id: item.id, kind: 'saved', text: 'Saved'};
+    saveSnapshot();
     $('sync').textContent = demo ? 'Preview updated · not saved to the sheet' : 'Saved to the shared kitchen';
   } catch (error) {
+    remember(confirmed);
+    saveSnapshot();
     writable = false;
-    $('message').textContent = `${error.message} Refresh to check the current quantity before making another change.`;
-    $('sync').textContent = 'Change not confirmed';
+    itemState = {id: item.id, kind: error.code === 'conflict' ? 'conflict' : 'error',
+      text: error.code === 'conflict' ? 'Changed elsewhere' : 'Save not confirmed'};
+    $('message').textContent = `${error.message} Wait a few seconds, then refresh to check the current quantity before editing again.`;
+    $('sync').textContent = error.code === 'conflict' ? 'Quantity conflict' : 'Change not confirmed';
   } finally {
     writing = false;
+    quickSession = null;
     quickToken = '';
     if (!demo && quickWidget !== undefined) window.turnstile.reset(quickWidget);
     render();
@@ -254,6 +321,12 @@ $('item-form').addEventListener('submit', async event => {
     payload.id = pendingAdd.id;
   }
   writing = true;
+  inventoryRevision++;
+  const original = editing;
+  if (editing) {
+    remember({...editing, quantity});
+    itemState = {id: editing.id, kind: 'pending', text: 'Saving…'};
+  }
   $('save').disabled = true;
   $('close-editor').disabled = true;
   $('form-error').textContent = 'Saving…';
@@ -265,11 +338,19 @@ $('item-form').addEventListener('submit', async event => {
       data = {item};
     } else data = await api({...payload, turnstileToken: token});
     remember(data.item);
+    if (editing) itemState = {id: editing.id, kind: 'saved', text: 'Saved'};
+    saveSnapshot();
     $('editor').close();
     $('message').textContent = '';
     $('sync').textContent = demo ? 'Preview updated · not saved to the sheet' : 'Saved to the shared kitchen';
   } catch (error) {
-    $('form-error').textContent = `${error.message} If the connection failed, the change may still have saved. Close and refresh to check before changing your request.`;
+    if (original) {
+      remember(original);
+      writable = false;
+      itemState = {id: original.id, kind: error.code === 'conflict' ? 'conflict' : 'error',
+        text: error.code === 'conflict' ? 'Changed elsewhere' : 'Save not confirmed'};
+    }
+    $('form-error').textContent = `${error.message} Close this form, wait a few seconds, then refresh to check the current quantity before editing again.`;
     if (!demo && widget !== undefined) window.turnstile.reset(widget);
   } finally {
     token = '';
@@ -289,6 +370,7 @@ $('add-open').onclick = () => openEditor();
 $('refresh').onclick = load;
 $('search').oninput = render;
 document.querySelectorAll('[data-filter]').forEach(button => { button.onclick = () => { filter = button.dataset.filter; render(); }; });
+showSnapshot();
 load();
 
 if (!demo && 'serviceWorker' in navigator) {
