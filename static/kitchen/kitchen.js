@@ -1,4 +1,4 @@
-import { config } from './config.js';
+import { config } from './config.js?v=6';
 
 const $ = (id) => document.getElementById(id);
 const demo = new URLSearchParams(location.search).get('demo') === '1';
@@ -18,7 +18,7 @@ function applyTheme() {
   button.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
   button.setAttribute('aria-pressed', String(dark));
   button.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#171e1b' : '#285647');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#151719' : '#285647');
 }
 applyTheme();
 $('theme-toggle').onclick = () => {
@@ -270,7 +270,7 @@ async function quickChange(item, quantity, direction) {
     remember(confirmed);
     itemState = {id: item.id, kind: 'saved', text: 'Saved'};
     saveSnapshot();
-    $('sync').textContent = demo ? 'Preview updated · not saved to the sheet' : 'Saved to the shared kitchen';
+    $('sync').textContent = demo ? 'Preview updated · not saved to the sheet' : '';
   } catch (error) {
     remember(confirmed);
     saveSnapshot();
@@ -374,31 +374,49 @@ $('item-form').addEventListener('submit', async event => {
   }
   $('save').disabled = true;
   $('close-editor').disabled = true;
-  $('form-error').textContent = 'Saving…';
+  $('form-error').textContent = demo ? 'Saving…' : 'Verifying…';
   render();
+  let usedQuickToken = false;
   try {
+    const tokenPromise = demo ? Promise.resolve('') : original
+      ? token ? Promise.resolve(token) : (usedQuickToken = true, getQuickToken())
+      : getFormToken();
+    if (original) {
+      // The quick challenge remains available outside the dialog if verification is needed.
+      $('editor').close();
+      $('message').textContent = '';
+      $('sync').textContent = '';
+    } else $('form-error').textContent = 'Saving…';
+    const turnstileToken = await tokenPromise;
     let data;
     if (demo) {
-      const item = editing ? {...editing, quantity, version: crypto.randomUUID()} : {...payload, version: crypto.randomUUID()};
+      const item = original ? {...original, quantity, version: crypto.randomUUID()} : {...payload, version: crypto.randomUUID()};
       data = {item};
-    } else data = await api({...payload, turnstileToken: await getFormToken()});
+    } else data = await api({...payload, turnstileToken});
     remember(data.item);
-    if (editing) itemState = {id: editing.id, kind: 'saved', text: 'Saved'};
+    if (original) itemState = {id: original.id, kind: 'saved', text: 'Saved'};
     saveSnapshot();
-    $('editor').close();
+    if (!original) $('editor').close();
     $('message').textContent = '';
-    $('sync').textContent = demo ? 'Preview updated · not saved to the sheet' : 'Saved to the shared kitchen';
+    $('sync').textContent = demo ? 'Preview updated · not saved to the sheet' : '';
   } catch (error) {
     if (original) {
       remember(original);
       writable = false;
       itemState = {id: original.id, kind: error.code === 'conflict' ? 'conflict' : 'error',
         text: error.code === 'conflict' ? 'Changed elsewhere' : 'Save not confirmed'};
+      $('message').textContent = `${error.message} Wait a few seconds, then refresh to check the current quantity before editing again.`;
+      $('sync').textContent = '';
+    } else {
+      $('form-error').textContent = `${error.message} If the connection failed, the item may have saved. Refresh before trying again.`;
+      if (!demo && widget !== undefined) window.turnstile.reset(widget);
     }
-    $('form-error').textContent = `${error.message} Close this form, wait a few seconds, then refresh to check the current quantity before editing again.`;
-    if (!demo && widget !== undefined) window.turnstile.reset(widget);
   } finally {
     token = '';
+    if (usedQuickToken && quickWidget !== undefined) {
+      quickToken = '';
+      window.turnstile.reset(quickWidget);
+    }
     writing = false;
     $('close-editor').disabled = false;
     $('save').disabled = false;
