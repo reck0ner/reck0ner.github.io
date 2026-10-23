@@ -1,8 +1,9 @@
 // Cache only the public app shell. Inventory/API responses are always network-only.
-const CACHE = 'our-kitchen-shell-v6';
+const CACHE = 'our-kitchen-shell-v7';
 const SHELL = [
-  '/kitchen/', '/kitchen/kitchen.css?v=6', '/kitchen/kitchen.js?v=6',
-  '/kitchen/config.js?v=6', '/kitchen/manifest.webmanifest',
+  '/kitchen/', '/kitchen/kitchen.css?v=7', '/kitchen/kitchen.js?v=7',
+  '/kitchen/config.js?v=7', '/kitchen/manifest.webmanifest',
+  '/kitchen/icons/pantry-favicon.svg',
   '/kitchen/icons/icon-192.png', '/kitchen/icons/icon-512.png',
   '/kitchen/icons/apple-touch-icon.png',
 ];

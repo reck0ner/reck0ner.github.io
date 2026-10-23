@@ -1,4 +1,4 @@
-import { config } from './config.js?v=6';
+import { config } from './config.js?v=7';
 
 const $ = (id) => document.getElementById(id);
 const demo = new URLSearchParams(location.search).get('demo') === '1';
@@ -27,7 +27,7 @@ $('theme-toggle').onclick = () => {
   applyTheme();
 };
 themeMedia?.addEventListener?.('change', () => { if (!savedTheme) applyTheme(); });
-let items = [], filter = 'All', writing = false, writable = false, editing = null;
+let items = [], filter = 'All', expiryFilter = '', writing = false, writable = false, editing = null;
 let widget, token = '', pendingAdd = null;
 let formChallengePromise, formTokenWaiter;
 let turnstileLoading, quickWidget, quickToken = '', quickWaiter;
@@ -80,15 +80,22 @@ function expiryText(value, verbose = false) {
   return verbose ? `${value < monthNow() ? 'Past expiry month · ' : value === monthNow() ? 'This month · ' : 'Expires '}${label}` : label;
 }
 function render() {
-  $('total').textContent = items.filter(x => x.quantity > 0).length;
-  $('soon').textContent = items.filter(x => x.quantity > 0 && x.expiry === monthNow()).length;
-  $('expired').textContent = items.filter(x => x.quantity > 0 && x.expiry && x.expiry < monthNow()).length;
+  const active = items.filter(x => x.quantity > 0);
+  $('total').textContent = active.length;
+  $('soon').textContent = active.filter(x => x.expiry === monthNow()).length;
+  $('expired').textContent = active.filter(x => x.expiry && x.expiry < monthNow()).length;
+  document.querySelectorAll('[data-expiry-filter]').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.expiryFilter === expiryFilter)));
   document.querySelectorAll('[data-filter]').forEach(b => {
     b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
-    b.querySelector('span').textContent = items.filter(x => b.dataset.filter === 'All' || x.location === b.dataset.filter).length;
+    b.querySelector('span').textContent = active.filter(x => b.dataset.filter === 'All' || x.location === b.dataset.filter).length;
   });
   const query = $('search').value.trim().toLocaleLowerCase();
-  const visible = items.filter(x => (filter === 'All' || x.location === filter) && x.name.toLocaleLowerCase().includes(query));
+  const visible = active.filter(x => (filter === 'All' || x.location === filter) &&
+    (!expiryFilter || (expiryFilter === 'due' ? x.expiry === monthNow() : x.expiry && x.expiry < monthNow())) &&
+    x.name.toLocaleLowerCase().includes(query))
+    .sort((a, b) => (a.expiry || '9999-99').localeCompare(b.expiry || '9999-99') ||
+      a.name.localeCompare(b.name, undefined, {sensitivity: 'base'}));
   $('items').replaceChildren(...visible.map(item => {
     const card = el('article', 'item');
     const icon = el('span', 'item-icon', {Fridge: '❄', Pantry: '♧', Spices: '✳'}[item.location]);
@@ -128,8 +135,8 @@ function render() {
     return card;
   }));
   $('empty').hidden = visible.length !== 0;
-  $('empty').querySelector('h3').textContent = query ? 'No matching ingredients' : 'Nothing on this shelf yet';
-  $('empty').querySelector('p').textContent = query ? 'Try another search or choose a different shelf.' : 'Add an item to get started.';
+  $('empty').querySelector('h3').textContent = query ? 'No matching ingredients' : expiryFilter ? 'No items in this expiry group' : 'Nothing on this shelf yet';
+  $('empty').querySelector('p').textContent = query ? 'Try another search or choose a different shelf.' : expiryFilter ? 'Choose another filter to see more items.' : 'Add an item to get started.';
   $('add-open').disabled = !writable || writing;
   $('refresh').disabled = writing;
 }
@@ -238,6 +245,7 @@ function remember(item) {
   const index = items.findIndex(x => x.id === item.id);
   if (index < 0) items.push(item); else items[index] = item;
 }
+function forget(id) { items = items.filter(x => x.id !== id); }
 async function quickChange(item, quantity, direction) {
   if (!writable) return;
   if (quickSession?.id === item.id) {
@@ -267,8 +275,8 @@ async function quickChange(item, quantity, direction) {
       quickToken = '';
       if (quickSession.desired === nextQuantity) break;
     }
-    remember(confirmed);
-    itemState = {id: item.id, kind: 'saved', text: 'Saved'};
+    if (confirmed.quantity === 0) forget(item.id); else remember(confirmed);
+    itemState = confirmed.quantity === 0 ? null : {id: item.id, kind: 'saved', text: 'Saved'};
     saveSnapshot();
     $('sync').textContent = demo ? 'Preview updated · not saved to the sheet' : '';
   } catch (error) {
@@ -353,8 +361,8 @@ $('item-form').addEventListener('submit', async event => {
   const quantity = Number($('quantity').value);
   const unit = $('unit').value.trim();
   const name = $('name').value.trim();
-  if (!Number.isFinite(quantity) || quantity < 0 || quantity > 9999 || Math.abs(quantity * 100 - Math.round(quantity * 100)) > 1e-7 || (!editing && (!name || name.length > 150))) {
-    $('form-error').textContent = 'Use a name up to 150 characters and a quantity from 0 to 9999, with up to two decimal places.';
+  if (!Number.isFinite(quantity) || quantity < 0 || quantity > 9999 || Math.abs(quantity * 100 - Math.round(quantity * 100)) > 1e-7 || (!editing && (!name || name.length > 150 || quantity === 0))) {
+    $('form-error').textContent = 'Use a name up to 150 characters and a quantity from 1 to 9999 when adding, with up to two decimal places.';
     return;
   }
   const payload = editing
@@ -393,8 +401,8 @@ $('item-form').addEventListener('submit', async event => {
       const item = original ? {...original, quantity, version: crypto.randomUUID()} : {...payload, version: crypto.randomUUID()};
       data = {item};
     } else data = await api({...payload, turnstileToken});
-    remember(data.item);
-    if (original) itemState = {id: original.id, kind: 'saved', text: 'Saved'};
+    if (data.item.quantity === 0) forget(data.item.id); else remember(data.item);
+    if (original) itemState = data.item.quantity === 0 ? null : {id: original.id, kind: 'saved', text: 'Saved'};
     saveSnapshot();
     if (!original) $('editor').close();
     $('message').textContent = '';
@@ -432,7 +440,13 @@ $('close-editor').onclick = () => $('editor').close();
 $('add-open').onclick = () => openEditor();
 $('refresh').onclick = load;
 $('search').oninput = render;
-document.querySelectorAll('[data-filter]').forEach(button => { button.onclick = () => { filter = button.dataset.filter; render(); }; });
+document.querySelectorAll('[data-filter]').forEach(button => { button.onclick = () => { filter = button.dataset.filter; expiryFilter = ''; render(); }; });
+document.querySelectorAll('[data-expiry-filter]').forEach(button => { button.onclick = () => {
+  expiryFilter = button.dataset.expiryFilter;
+  filter = 'All';
+  $('search').value = '';
+  render();
+}; });
 showSnapshot();
 load();
 

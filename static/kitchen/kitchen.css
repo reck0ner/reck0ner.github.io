@@ -43,3 +43,9 @@
 :root[data-theme=dark] .expiry.due,:root[data-theme=dark] .item-status.pending{color:#ffbd7a}
 :root[data-theme=dark] .expiry.past,:root[data-theme=dark] .stock.zero,:root[data-theme=dark] #message,:root[data-theme=dark] #form-error,:root[data-theme=dark] .item-status.error,:root[data-theme=dark] .item-status.conflict{color:#ffa18e}
 :root[data-theme=dark] .item-status.saved{color:#86d5a6}
+
+/* The overview counts double as expiry filters. */
+.summary button{display:block;width:100%;padding:0;border:0;background:transparent;color:var(--ink);text-align:left;border-radius:5px}
+.summary button:hover p,.summary button[aria-pressed=true]:not([data-expiry-filter=""]) p{text-decoration:underline;text-underline-offset:3px}
+.summary button[aria-pressed=true]:not([data-expiry-filter=""]) span{color:var(--orange)}
+.item-meta .expiry.past{font-weight:800}
